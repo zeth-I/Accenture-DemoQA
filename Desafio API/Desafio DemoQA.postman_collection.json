@@ -1,0 +1,335 @@
+{
+  "info": {
+    "_postman_id": "66b3251b-2d34-4c7d-b418-cc646f5579d2",
+    "name": "Desafio DemoQA Copy",
+    "description": "Coleção para automação do desafio API - Criar usuário, gerar token, listar e alugar livros",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32667635"
+  },
+  "item": [
+    {
+      "name": "1. Criar Usuário",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const response = pm.response.json();",
+              "    pm.collectionVariables.set(\"userId\", response.userID);",
+              "    console.log(\"Usuário criado com sucesso!\");",
+              "    console.log(\"UserID:\", response.userID);",
+              "} else if (pm.response.code === 406) {",
+              "    console.log(\"Usuário já existe. Use outro userName\");",
+              "} else {",
+              "    console.log(\"Erro ao criar usuário. Status:\", pm.response.code);",
+              "    console.log(\"Resposta:\", pm.response.json());",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userName\": \"{{userName}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Account/v1/User",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "v1",
+            "User"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Gerar Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    if (response.token) {",
+              "        pm.collectionVariables.set(\"token\", response.token);",
+              "        console.log(\"Token gerado com sucesso!\");",
+              "        console.log(\"Token:\", response.token.substring(0, 50) + \"...\");",
+              "    } else {",
+              "        console.log(\"Falha ao gerar token. Verifique usuário/senha.\");",
+              "    }",
+              "} else {",
+              "    console.log(\"Erro ao gerar token. Status:\", pm.response.code);",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userName\": \"{{userName}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Account/v1/GenerateToken",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "v1",
+            "GenerateToken"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Verificar Autorização",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const isAuthorized = pm.response.json();",
+              "    if (isAuthorized === true) {",
+              "        console.log(\"Usuário autorizado com sucesso!\");",
+              "    } else {",
+              "        console.log(\"Usuário NÃO autorizado\");",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/Account/v1/Authorized/{{userName}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "v1",
+            "Authorized",
+            "{{userName}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Listar Livros Disponíveis",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    const books = response.books;",
+              "    ",
+              "    if (books && books.length >= 2) {",
+              "        pm.collectionVariables.set(\"isbn1\", books[0].isbn);",
+              "        pm.collectionVariables.set(\"isbn2\", books[1].isbn);",
+              "        console.log(\"Livros listados com sucesso!\");",
+              "        console.log(\"Total de livros:\", books.length);",
+              "        console.log(\"Livro 1:\", books[0].title, \"- ISBN:\", books[0].isbn);",
+              "        console.log(\"Livro 2:\", books[1].title, \"- ISBN:\", books[1].isbn);",
+              "    } else {",
+              "        console.log(\"Erro ao listar livros. Status:\", pm.response.code);",
+              "    }",
+              "} "
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/BookStore/v1/Books",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "BookStore",
+            "v1",
+            "Books"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Alugar Livros",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    console.log(\"Livros alugados com sucesso!\");",
+              "    console.log(\"Resposta:\", pm.response.json());",
+              "} else {",
+              "    console.log(\"❌ Erro ao alugar livros. Status:\", pm.response.code);",
+              "    console.log(\"Resposta:\", pm.response.json());",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"collectionOfIsbns\": [\n    {\n      \"isbn\": \"{{isbn1}}\"\n    },\n    {\n      \"isbn\": \"{{isbn2}}\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/BookStore/v1/Books",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "BookStore",
+            "v1",
+            "Books"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Detalhes do Usuário",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const userDetails = pm.response.json();",
+              "    console.log(\"Detalhes do usuário obtidos com sucesso!\");",
+              "    console.log(\"Usuário:\", userDetails.username);",
+              "    console.log(\"ID:\", userDetails.userId);",
+              "    console.log(\"Livros reservados:\", userDetails.books.length);",
+              "    ",
+              "    if (userDetails.books.length > 0) {",
+              "        userDetails.books.forEach((book, index) => {",
+              "            console.log(`   ${index + 1}. ${book.title} (ISBN: ${book.isbn})`);",
+              "        });",
+              "    }",
+              "    ",
+              "    pm.environment.set(\"ultimo_resultado\", JSON.stringify(userDetails, null, 2));",
+              "} else {",
+              "    console.log(\"❌ Erro ao obter detalhes. Status:\", pm.response.code);",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/Account/v1/User/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "v1",
+            "User",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://demoqa.com"
+    },
+    {
+      "key": "userName",
+      "value": "usuario_teste_2026"
+    },
+    {
+      "key": "password",
+      "value": "Teste@123456"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "isbn1",
+      "value": ""
+    },
+    {
+      "key": "isbn2",
+      "value": ""
+    }
+  ]
+}
