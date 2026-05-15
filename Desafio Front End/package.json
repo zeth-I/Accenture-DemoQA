@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.3.1",
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-plugin-tab": "^2.0.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/support/step_definitions/**/*.js",
+    "nonGlobalStepDefinitions": false,
+    "filterSpecs": true,
+    "omitFiltered": true
+  }
+}
